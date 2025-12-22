@@ -14,16 +14,16 @@
           config.allowUnfree = true;
         };
 
-        version = "0.7.6.1";
+        version = "0.7.7.1";
 
         srcs = {
           x86_64-linux = {
             url = "https://github.com/imputnet/helium-linux/releases/download/${version}/helium-${version}-x86_64_linux.tar.xz";
-            sha256 = "12z2zhbchyq0jzhld57inkaxfwm2z8gxkamnnwcvlw96qqr0rga4";
+            sha256 = "sha256-aY9GwIDPTcskm55NluSyxkCHC6drd6BdBaNYZhrzlRE=";
           };
           aarch64-linux = {
             url = "https://github.com/imputnet/helium-linux/releases/download/${version}/helium-${version}-arm64_linux.tar.xz";
-            sha256 = "1fasgax0d74nlxziqwh10x5xh25p82gnq9dh5qll2wc14hc98jmn";
+            sha256 = "sha256-76hJ19/bHzdE1//keGF9imYkMHOy6VHpA56bxEkgwgA=";
           };
         };
 
