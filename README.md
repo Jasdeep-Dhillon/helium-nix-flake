@@ -43,4 +43,4 @@ The binary will be available at `./result/bin/helium`.
 
 ## License
 
-This flake is licensed under the MIT License. The Helium browser itself is licensed under the GPL-3.0 License.
+This flake is licensed under the [MIT License](./LICENSE.md). The Helium browser itself is licensed under the [GPL-3.0 License](https://github.com/imputnet/helium/blob/main/LICENSE).
