@@ -6,13 +6,15 @@
     utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    utils,
-  }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      utils,
+    }:
     utils.lib.eachDefaultSystem (
-      system: let
+      system:
+      let
         pkgs = import nixpkgs {
           inherit system;
           config.allowUnfree = true;
@@ -50,7 +52,8 @@
 
           src = pkgs.fetchurl (srcs.${system} or (throw "Unsupported system: ${system}"));
 
-          nativeBuildInputs = with pkgs;
+          nativeBuildInputs =
+            with pkgs;
             [
               makeWrapper
             ]
@@ -66,7 +69,8 @@
             7zz x $src
           '';
 
-          buildInputs = with pkgs;
+          buildInputs =
+            with pkgs;
             pkgs.lib.optionals stdenv.isLinux [
               alsa-lib
               at-spi2-atk
@@ -82,21 +86,21 @@
               glib
               gtk3
               libGL
-              xorg.libX11
-              xorg.libXScrnSaver
-              xorg.libXcomposite
-              xorg.libXcursor
-              xorg.libXdamage
-              xorg.libXext
-              xorg.libXfixes
-              xorg.libXi
-              xorg.libXrandr
-              xorg.libXrender
-              xorg.libXtst
+              libX11
+              libXScrnSaver
+              libXcomposite
+              libXcursor
+              libXdamage
+              libXext
+              libXfixes
+              libXi
+              libXrandr
+              libXrender
+              libXtst
               libdrm
               libgbm
               libpulseaudio
-              xorg.libxcb
+              libxcb
               libxkbcommon
               mesa
               nspr
@@ -123,49 +127,55 @@
           dontWrapQtApps = pkgs.stdenv.isLinux;
 
           installPhase =
-            if pkgs.stdenv.isDarwin
-            then ''
-              runHook preInstall
+            if pkgs.stdenv.isDarwin then
+              ''
+                runHook preInstall
 
-              mkdir -p $out/Applications/Helium.app
-              cp -r . $out/Applications/Helium.app
+                mkdir -p $out/Applications/Helium.app
+                cp -r . $out/Applications/Helium.app
 
-              mkdir -p $out/bin
-              makeWrapper $out/Applications/Helium.app/Contents/MacOS/Helium $out/bin/helium \
-                --add-flags "--disable-component-update" \
-                --add-flags "--simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'" \
-                --add-flags "--check-for-update-interval=0" \
-                --add-flags "--disable-background-networking"
+                mkdir -p $out/bin
+                makeWrapper $out/Applications/Helium.app/Contents/MacOS/Helium $out/bin/helium \
+                  --add-flags "--disable-component-update" \
+                  --add-flags "--simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'" \
+                  --add-flags "--check-for-update-interval=0" \
+                  --add-flags "--disable-background-networking"
 
-              runHook postInstall
-            ''
-            else ''
-              runHook preInstall
+                runHook postInstall
+              ''
+            else
+              ''
+                runHook preInstall
 
-              mkdir -p $out/bin $out/opt/helium
-              cp -r * $out/opt/helium
+                mkdir -p $out/bin $out/opt/helium
+                cp -r * $out/opt/helium
 
-              # The binary is named 'helium' as of version 0.8.3.1
-              makeWrapper $out/opt/helium/helium $out/bin/helium \
-                --prefix LD_LIBRARY_PATH : "${pkgs.lib.makeLibraryPath (with pkgs; [
-                libGL
-                libvdpau
-                libva
-                pipewire
-              ])}" \
-                --add-flags "--ozone-platform-hint=auto" \
-                --add-flags "--enable-features=WaylandWindowDecorations" \
-                --add-flags "--disable-component-update" \
-                --add-flags "--simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'" \
-                --add-flags "--check-for-update-interval=0" \
-                --add-flags "--disable-background-networking"
+                # The binary is named 'helium' as of version 0.8.3.1
+                makeWrapper $out/opt/helium/helium $out/bin/helium \
+                  --prefix LD_LIBRARY_PATH : "${
+                    pkgs.lib.makeLibraryPath (
+                      with pkgs;
+                      [
+                        libGL
+                        libvdpau
+                        libva
+                        pipewire
+                      ]
+                    )
+                  }" \
+                  --add-flags "--ozone-platform-hint=auto" \
+                  --add-flags "--enable-features=WaylandWindowDecorations" \
+                  --add-flags "--disable-component-update" \
+                  --add-flags "--simulate-outdated-no-au='Tue, 31 Dec 2099 23:59:59 GMT'" \
+                  --add-flags "--check-for-update-interval=0" \
+                  --add-flags "--disable-background-networking"
 
-              # Install icon
-              mkdir -p $out/share/icons/hicolor/256x256/apps
-              cp $out/opt/helium/product_logo_256.png $out/share/icons/hicolor/256x256/apps/helium.png
+                # Install icon
+                mkdir -p $out/share/icons/hicolor/256x256/apps
+                cp $out/opt/helium/product_logo_256.png $out/share/icons/hicolor/256x256/apps/helium.png
 
-              runHook postInstall
-            '';
+                runHook postInstall
+              '';
 
           desktopItems = pkgs.lib.optionals pkgs.stdenv.isLinux [
             (pkgs.makeDesktopItem {
@@ -174,9 +184,18 @@
               icon = "helium";
               desktopName = "Helium";
               genericName = "Web Browser";
-              categories = ["Network" "WebBrowser"];
+              categories = [
+                "Network"
+                "WebBrowser"
+              ];
               terminal = false;
-              mimeTypes = ["text/html" "text/xml" "application/xhtml+xml" "x-scheme-handler/http" "x-scheme-handler/https"];
+              mimeTypes = [
+                "text/html"
+                "text/xml"
+                "application/xhtml+xml"
+                "x-scheme-handler/http"
+                "x-scheme-handler/https"
+              ];
             })
           ];
 
@@ -184,7 +203,12 @@
             description = "Private, fast, and honest web browser based on ungoogled-chromium";
             homepage = "https://helium.computer/";
             license = licenses.gpl3Only;
-            platforms = ["x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin"];
+            platforms = [
+              "x86_64-linux"
+              "aarch64-linux"
+              "x86_64-darwin"
+              "aarch64-darwin"
+            ];
             mainProgram = "helium";
           };
         };
@@ -193,10 +217,16 @@
           type = "app";
           program = "${helium}/bin/helium";
           meta = {
-            inherit (helium.meta) description homepage license platforms;
+            inherit (helium.meta)
+              description
+              homepage
+              license
+              platforms
+              ;
           };
         };
-      in {
+      in
+      {
         packages.default = helium;
         packages.helium = helium;
 
@@ -204,7 +234,7 @@
         apps.helium = app;
 
         devShells.default = pkgs.mkShell {
-          buildInputs = [helium];
+          buildInputs = [ helium ];
         };
       }
     );
