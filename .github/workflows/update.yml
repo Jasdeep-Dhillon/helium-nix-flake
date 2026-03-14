@@ -6,6 +6,11 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    tags:
+      description: "Update Flake"
+      required: false
+      type: boolean
 
 jobs:
   update:
